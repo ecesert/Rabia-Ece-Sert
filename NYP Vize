@@ -1,0 +1,194 @@
+//Projemizin çalışması için kullandığımız sınıfların kütüphanelerini içe aktardık
+import java.io.*;
+import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+public class Main {
+
+    //Main sınıfımızın içinde dosyalama işlemindeki fonksiyonlarda oluşturduğumuz döngülerde kullanmak ve bu sınıfta artırmak için sayaçlarımızı tanımlıyoruz.
+    static int elituyesayac=0;
+    static int geneluyesayac=0;
+    public static void main(String[] args) throws IOException {
+        //Elit ve genel üyleri yazdırırken kullanıcıdan aldığımız kişileri birer birer artırarak alacağımız kişi sayısı kadar yazdurmak için diğer sayçlarımızı tanımlıyoruz.
+        int elitsayac=0;
+        int genelsayac=0;
+
+        //DosyaIslemleri sınıfımızdan oluşturduğumzu nesneyle kullanıcılar adlı dosyamızı ekledik
+        DosyaIslemleri dosya=new DosyaIslemleri("kullanicilar.txt");
+        Scanner scanner = new Scanner(System.in);
+
+        //Kullanıcıdan istediği kadar yazdırması için 100 kişilik diziler oluşturduk
+        String[] ElitIsimler = new String[100];
+        String[] ElitSoyisimler = new String[100];
+        String[] ElitEmailler = new String[100];
+        String[] GenelIsimler = new String[100];
+        String[] GenelSoyisimler = new String[100];
+        String[] GenelEmailler = new String[100];
+
+        //Kullanıcıdan yapmak istediği işlemi işlem bittikten sonra tekrar sorması için döngü oluşturduk
+        while(true){
+
+        System.out.println("Lutfen yapmak istediğiniz işlemi giriniz...");
+        System.out.println("1)Elite Üye Ekleme\n2)Genel Üye Ekleme\n3)Mail Gönderme");
+        int secim1 = scanner.nextInt();
+
+            //Kullanıcının önüne gelen menüde kullanıcı yapmak istediği işlemi seçer
+        switch (secim1) {
+            case 1:
+
+                //Kullanıcı Elit üye kaydetmek isterse ona öncelikle kaç kişi kaydetmek istediği sorularak kaydedeceği kişi sayısı kadar kullanıcıdan elit üye alır
+                System.out.print("Kaç kişinin bilgisini kaydetmek istiyorsunuz? ");
+                int kisiSayisi = scanner.nextInt();
+                //Her aldığı kişiden sonra sayaç alacağı kişi sayısına kadar birer birer artar.
+           for(int i=0;i<kisiSayisi;i++){
+               elituyesayac++;
+               System.out.println("Lütfen eklemek istediğiniz Elite Üyenin isim, soyisim ve email bilgilerini giriniz:");
+               System.out.print(elitsayac+ 1 + ".Elit Kullanıcının adı: ");
+               ElitIsimler[elitsayac] = scanner.next();
+               System.out.print(elitsayac+ 1 + ".Elit Kullanıcının soyadı: ");
+               ElitSoyisimler[elitsayac] = scanner.next();
+               System.out.print(elitsayac+ 1 + ".Elit Kullanıcının email adresi: ");
+               ElitEmailler[elitsayac] = scanner.next();
+
+               //DosyaIslemleri sınıfından aldığımız fonksiyonu kullanarak kaydetmiş olduğumuz elit üyeleri kullanıcılar isimli dosyamıza yazdırıyoruz
+               dosya.elitKullaniciBilgileriniKaydet(ElitIsimler,ElitSoyisimler,ElitEmailler,GenelIsimler, GenelSoyisimler, GenelEmailler);
+               System.out.println("Kaydedilen kullanıcı dosyaya yazıldı.");
+               elitsayac++;
+           }
+                break;
+            case 2:
+
+                //Kullanıcı eğer Genel üye kaydetmek isterse ona öncelikle kaç kişi kaydetmek istediği sorularak kaydedeceği kişi sayısı kadar kullanıcıdan genel üye alır
+                System.out.print("Kaç kişinin bilgisini kaydetmek istiyorsunuz? ");
+                kisiSayisi = scanner.nextInt();
+                for(int i=0;i<kisiSayisi;i++) {
+                    geneluyesayac++;
+                    System.out.println("Lütfen eklemek istediğiniz Genel Üyenin isim soyisim ve email bilgilerini giriniz:");
+                    System.out.print(genelsayac + 1 + ".Genel Kullanıcının adı: ");
+                    GenelIsimler[genelsayac] = scanner.next();
+                    System.out.print(genelsayac + 1 + ".Genel Kullanıcının soyadı: ");
+                    GenelSoyisimler[genelsayac] = scanner.next();
+                    System.out.print(genelsayac + 1 + ".Genel Kullanıcının email adresi: ");
+                    GenelEmailler[genelsayac] = scanner.next();
+
+                    //DosyaIslemleri sınıfından aldıgımız fonksiyonu kullanarak kaydettiğimiz genel üyeleri kullanıcılar isimli dosyamıza yazdırıyoruz
+                    dosya.genelKullaniciBilgileriniKaydet(ElitIsimler, ElitSoyisimler, ElitEmailler, GenelIsimler, GenelSoyisimler, GenelEmailler);
+                    System.out.println("Kaydedilen kullanıcı dosyaya yazıldı.");
+                    genelsayac++;
+                }
+                break;
+
+            case 3:
+
+                //Kullanıcının girmiş olduğu üyeleri kaydettikten sonra kullanıcı menüde 3 e bastığında karşısına bu işlem çıkıyor ve kullanıcı kime mail atmak istediğini seçiyor
+                System.out.println("Lütfen kime mail atmak istediğinizi seçiniz...");
+                System.out.println("1)Elit üyelere mail\n 2)Genel üyelere mail\n 3)Tüm üyelere mail");
+                int secim2 = scanner.nextInt();
+                switch (secim2) {
+                    case 1:
+
+                        //Kullanıcı eğer elit üyelere mail atmak isterse mail atacağı elit üyeler DosyaIslemleri sınıfından aldığımız bu fonksiyonla görüntülenir
+                        dosya.elitKullaniciBilgileriniGoster(ElitIsimler, ElitSoyisimler, ElitEmailler);
+                        System.out.println("Lütfen tüm ELİTE üyelere atacağınız mesaj metnini giriniz:");
+
+                        break;
+                    case 2:
+
+                        //Kullanıcı eğer genel üyelere mail atmak isterse mail atacağı tüm üyeler DosyaIslemleri sınıfından aldığımız bu fonksiyonla görüntülenir
+                        dosya.genelKullaniciBilgileriniGoster(GenelIsimler, GenelSoyisimler, GenelEmailler);
+                        System.out.println("Lütfen tüm GENEL üyelere atacağınız mesaj metnini giriniz:");
+
+                        break;
+                    case 3:
+
+                        //Kullanıcı eğer tüm üyelere mail atmak isterse mail atacağı tüm üyeler DosyaIslemleri sınıfından aldığımız bu fonksiyonla görüntülenir
+                            System.out.println("-------------TÜM ÜYELER-------------");
+                            dosya.elitKullaniciBilgileriniGoster(ElitIsimler, ElitSoyisimler, ElitEmailler);
+                            dosya.genelKullaniciBilgileriniGoster(GenelIsimler, GenelSoyisimler, GenelEmailler);
+                        System.out.println("Lütfen TÜM üyelere atacağınız mesaj metnini giriniz:");
+                        break;
+                    default:
+                        //Kullanıcı eğer menüden farklı bir seçenek girerse karşısına bu hata metni çıkar
+                        System.out.println("Yanlış veya eksik bir seçim yaptınız, lütfen tekrar deneyiniz.");
+                }
+        }
+        }
+    }
+}
+
+
+
+class DosyaIslemleri {
+    private String dosyaAdi;
+
+
+    //Dosya işlemleri yapmak için kullanılabilecek bir sınıfın constructor metodunu tanımlıyoruz ve dosya adı bilgisinin sınıf içinde tutulmasını sağlıyoruz
+    public DosyaIslemleri(String dosyaAdi) throws IOException {
+        this.dosyaAdi = dosyaAdi;
+    }
+
+    Main nesne=new Main();//Main sınıfımızdan dosya işlemlerinde kullanmak üzere bir nesne oluşturuyoruz
+
+
+    //Main sınıfında dizi tanımlayarak kullanıcıdan almaış olduğumuz elit üyeleri bu fonksiyonla çağırarak dosyaya yazdıryoruz
+    public void elitKullaniciBilgileriniKaydet(String[] ElitIsimler, String[] ElitSoyisimler, String[] ElitEmailler,String[] GenelIsimler, String[] GenelSoyisimler, String[] GenelEmailler) throws IOException {
+
+        //Proje her çalıştığında değişkenleri dosyaya yazdırıyoruz
+        FileWriter writer = new FileWriter(dosyaAdi,false);
+        writer.write("---------------ELİTE ÜYELER--------------\n");
+        for (int i = 0; i < nesne.elituyesayac; i++) {
+            writer.write(i+1+".Kişi:"+ElitIsimler[i] + " " + ElitSoyisimler[i] + ", " + ElitEmailler[i] + "\n");
+        }
+        writer.write("---------------GENEL ÜYELER--------------\n");
+        for (int j = 0; j <nesne.geneluyesayac; j++) {
+            writer.write(j + 1 + ".Kişi:" + GenelIsimler[j] + " " + GenelSoyisimler[j] + ", " + GenelEmailler[j] + "\n");
+        }
+        writer.close();
+    }
+
+    //Kullanıcıdan almış olduğumuz genel üyeleri bu fonksiyonla çağırarak kullanıcılar isimli dosyaya yazdırıyoruz
+    public void genelKullaniciBilgileriniKaydet(String[] ElitIsimler, String[] ElitSoyisimler, String[] ElitEmailler,String[] GenelIsimler, String[] GenelSoyisimler, String[] GenelEmailler) throws IOException {
+
+        //Proje her çalıştığında değişkenleri dosyaya yazdırıyoruz
+        FileWriter writer = new FileWriter(dosyaAdi,false);
+        writer.write("---------------ELİTE ÜYELER--------------\n");
+        for (int i = 0; i < nesne.elituyesayac; i++) {
+            writer.write(i+1+".Kişi:"+ElitIsimler[i] + " " + ElitSoyisimler[i] + ", " + ElitEmailler[i] + "\n");
+        }
+        writer.write("---------------GENEL ÜYELER--------------\n");
+        for (int j = 0; j <nesne.geneluyesayac; j++) {
+            writer.write(j + 1 + ".Kişi:" + GenelIsimler[j] + " " + GenelSoyisimler[j] + ", " + GenelEmailler[j] + "\n");
+        }
+        writer.close();
+    }
+
+    //Main sınıfında bu fonksiyonu çağırarak mail atmak istediğimiz ve dosyaya yazdırdığımız tüm elit üyeleri görüntülüyoruz
+    public void elitKullaniciBilgileriniGoster(String[] ElitIsimler, String[] ElitSoyisimler, String[] ElitEmailler) throws IOException {
+        Scanner scanner = new Scanner(System.in);
+
+        //Dosyadaki Elit üye verilerini okuyoruz
+        FileReader elitreader = new FileReader(dosyaAdi);
+        BufferedReader bufferedReader = new BufferedReader(elitreader);
+        System.out.println("-------------ELİTE ÜYELER------------\n");
+        for (int i = 0; i < nesne.elituyesayac; i++) {
+            System.out.println(i+1+".Kişi:"+ElitIsimler[i] + " " + ElitSoyisimler[i] + ", " + ElitEmailler[i] + "\n");
+        }
+        bufferedReader.close();
+    }
+
+    //Main sınıfında bu fonksiyonu çağırarak mail atmak istediğimiz ve dosyaya yazdırdığımız tüm genel üyeleri görüntülüyoruz
+    public void genelKullaniciBilgileriniGoster(String[] GenelIsimler, String[] GenelSoyisimler, String[] GenelEmailler) throws IOException {
+        Scanner scanner = new Scanner(System.in);
+
+        //Dosyadaki Genel üye verilerini okuyoruz
+        FileReader genelreader = new FileReader(dosyaAdi);
+        BufferedReader bufferedReader = new BufferedReader(genelreader);
+        System.out.println("-------------GENEL ÜYELER------------\n");
+        for (int i = 0; i < nesne.geneluyesayac; i++) {
+            System.out.println(i+1+".Kişi:"+GenelIsimler[i] + " " + GenelSoyisimler[i] + ", " + GenelEmailler[i] + "\n");
+        }
+        bufferedReader.close();
+    }
+}
